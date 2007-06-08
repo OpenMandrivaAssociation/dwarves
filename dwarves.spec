@@ -1,17 +1,17 @@
-%define libname libdwarves
-%define libver 1
+%define soname 1
+%define libname %mklibname dwarves %{soname}
 
 Name: dwarves
 Version: 1.0
-Release: 1
+Release: %mkrel 1
 License: GPL
 Summary: Dwarf Tools
-Group: Development/Tools
+Group: Development/Other
 URL: http://oops.ghostprotocols.net:81/blog
-Source: http://http://userweb.kernel.org/~acme/dwarves/%{name}-%{version}.tar.bz2
+Source: http://userweb.kernel.org/~acme/dwarves-%{version}.tar.bz2
 BuildRequires: cmake
-BuildRequires: elfutils-devel
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildRequires: elfutils-static-devel
+BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 dwarves is a set of tools that use the DWARF debugging information inserted in
@@ -26,36 +26,41 @@ tool to compare the effects changes in source code generate on the resulting
 binaries, pfunct, that can be used to find all sorts of information about
 functions, inlines, decisions made by the compiler about inlining, etc.
 
-%package -n %{libname}%{libver}
+%package -n %{libname}
 Summary: DWARF processing library
-Group: Development/Libraries
+Group: System/Libraries
 
-%description -n %{libname}%{libver}
-DWARF processing library
+%description -n %{libname}
+DWARF processing library.
 
-%package -n %{libname}%{libver}-devel
+%package -n %{libname}-devel
 Summary: DWARF processing library development files
-Group: Development/Libraries
-Requires: %{libname}%{libver} = %{version}-%{release}
+Group: Development/C
+Provides: dwarves-devel = %{version}-%{release}
+Provides: libdwarves-devel = %{version}-%{release}
+Requires: %{libname} = %{version}-%{release}
 
-%description -n %{libname}%{libver}-devel
-DWARF processing library development files
+%description -n %{libname}-devel
+DWARF processing library development files.
 
 %prep
 %setup -q -c -n %{name}-%{version}
 
 %build
-cmake -D__LIB=%{_lib} -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE="MinSizeRel" .
-make %{?_smp_mflags}
+cmake \
+	-D__LIB=%{_lib} \
+	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
+	-DCMAKE_BUILD_TYPE="MinSizeRel" .
+%make
 
 %install
 rm -Rf %{buildroot}
 
 make DESTDIR=%{buildroot} install
 
-%post -n %{libname}%{libver} -p /sbin/ldconfig
+%post -n %{libname} -p /sbin/ldconfig
 
-%postun -n %{libname}%{libver} -p /sbin/ldconfig
+%postun -n %{libname} -p /sbin/ldconfig
 
 %clean
 rm -rf %{buildroot}
@@ -82,18 +87,18 @@ rm -rf %{buildroot}
 %{_datadir}/dwarves/runtime/ctracer_relay.h
 %attr(0755,root,root) %{_datadir}/dwarves/runtime/python/ostra.py*
 
-%files -n %{libname}%{libver}
+%files -n %{libname}
 %defattr(0644,root,root,0755)
-%{_libdir}/%{libname}.so.*
-%{_libdir}/%{libname}_emit.so.*
-%{_libdir}/%{libname}_reorganize.so.*
+%{_libdir}/lib%{name}.so.%{soname}*
+%{_libdir}/lib%{name}_emit.so.%{soname}*
+%{_libdir}/lib%{name}_reorganize.so.%{soname}*
 
-%files -n %{libname}%{libver}-devel
+%files -n %{libname}-devel
 %defattr(0644,root,root,0755)
 %doc MANIFEST README
 %{_includedir}/dwarves.h
 %{_includedir}/dwarves_emit.h
 %{_includedir}/dwarves_reorganize.h
-%{_libdir}/%{libname}.so
-%{_libdir}/%{libname}_emit.so
-%{_libdir}/%{libname}_reorganize.so
+%{_libdir}/lib%{name}.so
+%{_libdir}/lib%{name}_emit.so
+%{_libdir}/lib%{name}_reorganize.so
