@@ -11,7 +11,6 @@ URL: http://oops.ghostprotocols.net:81/blog
 Source: http://userweb.kernel.org/~acme/dwarves-%{version}.tar.bz2
 BuildRequires: cmake
 BuildRequires: elfutils-static-devel
-BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 dwarves is a set of tools that use the DWARF debugging information inserted in
