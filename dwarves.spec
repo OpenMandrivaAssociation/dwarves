@@ -2,7 +2,7 @@
 %define libname %mklibname dwarves %{soname}
 
 Name: dwarves
-Version: 1.4
+Version: 1.6
 Release: %mkrel 1
 License: GPL
 Summary: Dwarf Tools
