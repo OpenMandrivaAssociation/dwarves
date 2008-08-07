@@ -3,7 +3,7 @@
 
 Name: dwarves
 Version: 1.6
-Release: %mkrel 1
+Release: %mkrel 2
 License: GPL
 Summary: Dwarf Tools
 Group: Development/Other
