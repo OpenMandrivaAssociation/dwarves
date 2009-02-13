@@ -2,13 +2,13 @@
 %define libname %mklibname dwarves %{soname}
 
 Name: dwarves
-Version: 1.6
-Release: %mkrel 2
+Version: 1.7
+Release: %mkrel 1
 License: GPL
 Summary: Dwarf Tools
 Group: Development/Other
 URL: http://oops.ghostprotocols.net:81/blog
-Source: http://userweb.kernel.org/~acme/dwarves/dwarves-%{version}.tar.bz2
+Source: http://fedorapeople.org/~acme/dwarves/dwarves-%{version}.tar.bz2
 BuildRequires: cmake
 BuildRequires: elfutils-static-devel
 BuildRoot: %{_tmppath}/%{name}-buildroot
@@ -91,6 +91,7 @@ rm -rf %{buildroot}
 %{_datadir}/dwarves/runtime/ctracer_relay.h
 %{_datadir}/dwarves/runtime/linux.blacklist.cu
 %attr(0755,root,root) %{_datadir}/dwarves/runtime/python/ostra.py*
+%{_mandir}/man1/pahole.1*
 
 %files -n %{libname}
 %defattr(0644,root,root,0755)
