@@ -2,13 +2,14 @@
 %define libname %mklibname dwarves %{soname}
 
 Name: dwarves
-Version: 1.7
-Release: %mkrel 2
+Version: 1.8
+Release: %mkrel 1
 License: GPLv2
 Summary: Dwarf Tools
 Group: Development/Other
 URL: http://oops.ghostprotocols.net:81/blog
 Source: http://fedorapeople.org/~acme/dwarves/dwarves-%{version}.tar.bz2
+Patch: dwarves-remove-uneeded-linking.patch
 BuildRequires: cmake
 BuildRequires: elfutils-static-devel
 BuildRoot: %{_tmppath}/%{name}-buildroot
@@ -45,12 +46,13 @@ DWARF processing library development files.
 
 %prep
 %setup -q -c -n %{name}-%{version}
+%patch -p1
 
 %build
 cmake \
 	-D__LIB=%{_lib} \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
-	-DCMAKE_BUILD_TYPE="MinSizeRel" .
+	-DCMAKE_BUILD_TYPE=release .
 %make
 
 %install
@@ -83,8 +85,9 @@ rm -rf %{buildroot}
 %{_bindir}/pglobal
 %{_bindir}/prefcnt
 %{_bindir}/syscse
-%dir %{_datadir}/dwarves/runtime/
-%dir %{_datadir}/dwarves/runtime/python/
+%dir %{_datadir}/dwarves
+%dir %{_datadir}/dwarves/runtime
+%dir %{_datadir}/dwarves/runtime/python
 %defattr(0644,root,root,0755)
 %{_datadir}/dwarves/runtime/Makefile
 %{_datadir}/dwarves/runtime/ctracer_relay.c
@@ -102,9 +105,15 @@ rm -rf %{buildroot}
 %files -n %{libname}-devel
 %defattr(0644,root,root,0755)
 %doc MANIFEST README
-%{_includedir}/dwarves.h
-%{_includedir}/dwarves_emit.h
-%{_includedir}/dwarves_reorganize.h
+%dir %{_includedir}/dwarves
+%{_includedir}/dwarves/dutil.h
+%{_includedir}/dwarves/dwarves.h
+%{_includedir}/dwarves/dwarves_emit.h
+%{_includedir}/dwarves/dwarves_reorganize.h
+%{_includedir}/dwarves/gobuffer.h
+%{_includedir}/dwarves/list.h
+%{_includedir}/dwarves/rbtree.h
+%{_includedir}/dwarves/strings.h
 %{_libdir}/lib%{name}.so
 %{_libdir}/lib%{name}_emit.so
 %{_libdir}/lib%{name}_reorganize.so
