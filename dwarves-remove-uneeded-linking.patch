@@ -1,0 +1,68 @@
+Avoid following warnings:
+
+Warning: unused libraries in /usr/lib64/libdwarves_reorganize.so.1.0.0: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+Warning: unused libraries in /usr/lib64/libdwarves_emit.so.1.0.0: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+Warning: unused libraries in /usr/bin/ctracer: libz.so.1
+ libdw.so.1
+
+Warning: unused libraries in /usr/bin/syscse: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+Warning: unused libraries in /usr/bin/pglobal: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+Warning: unused libraries in /usr/bin/pdwtags: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+Warning: unused libraries in /usr/bin/prefcnt: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+Warning: unused libraries in /usr/bin/pfunct: libz.so.1
+ libdw.so.1
+
+Warning: unused libraries in /usr/bin/pahole: libz.so.1
+ libdw.so.1
+ libelf.so.1
+
+Warning: unused libraries in /usr/bin/dtagnames: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+Warning: unused libraries in /usr/bin/codiff: libdw.so.1
+ libelf.so.1
+ libz.so.1
+
+diff -p -up dwarves-1.8/CMakeLists.txt.orig dwarves-1.8/CMakeLists.txt
+--- dwarves-1.8/CMakeLists.txt.orig	2009-06-17 13:05:08.000000000 -0300
++++ dwarves-1.8/CMakeLists.txt	2009-12-17 14:07:19.034269772 -0200
+@@ -38,17 +38,18 @@ set(dwarves_LIB_SRCS dwarves.c dwarves_f
+ 		     dutil.c elf_symtab.c rbtree.c)
+ add_library(dwarves SHARED ${dwarves_LIB_SRCS})
+ set_target_properties(dwarves PROPERTIES VERSION 1.0.0 SOVERSION 1)
++set_target_properties(dwarves PROPERTIES LINK_INTERFACE_LIBRARIES "")
+ target_link_libraries(dwarves ${DWARF_LIBRARIES} ${ZLIB_LIBRARIES})
+ 
+ set(dwarves_emit_LIB_SRCS dwarves_emit.c)
+ add_library(dwarves_emit SHARED ${dwarves_emit_LIB_SRCS})
+ set_target_properties(dwarves_emit PROPERTIES VERSION 1.0.0 SOVERSION 1)
+-target_link_libraries(dwarves_emit ${DWARF_LIBRARIES} dwarves)
++target_link_libraries(dwarves_emit dwarves)
+ 
+ set(dwarves_reorganize_LIB_SRCS dwarves_reorganize.c)
+ add_library(dwarves_reorganize SHARED ${dwarves_reorganize_LIB_SRCS})
+ set_target_properties(dwarves_reorganize PROPERTIES VERSION 1.0.0 SOVERSION 1)
+-target_link_libraries(dwarves_reorganize ${DWARF_LIBRARIES} dwarves)
++target_link_libraries(dwarves_reorganize dwarves)
+ 
+ set(codiff_SRCS codiff.c)
+ add_executable(codiff ${codiff_SRCS})
