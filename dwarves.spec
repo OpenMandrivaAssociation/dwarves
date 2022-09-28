@@ -1,18 +1,17 @@
 %define soname 1
-%define libname %mklibname dwarves %{soname}
+%define libname %mklibname dwarves
 
 Name: dwarves
-Version: 1.8
-Release: %mkrel 2
+Version: 1.24
+Release: 1
 License: GPLv2
 Summary: Dwarf Tools
 Group: Development/Other
 URL: http://oops.ghostprotocols.net:81/blog
 Source: http://fedorapeople.org/~acme/dwarves/dwarves-%{version}.tar.bz2
-Patch: dwarves-remove-uneeded-linking.patch
 BuildRequires: cmake
+BuildRequires: ninja
 BuildRequires: elfutils-static-devel
-BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 dwarves is a set of tools that use the DWARF debugging information inserted in
@@ -45,45 +44,33 @@ Requires: %{libname} = %{version}-%{release}
 DWARF processing library development files.
 
 %prep
-%setup -q -c -n %{name}-%{version}
-%patch -p1
+%autosetup -p1
+%cmake \
+	-D__LIB=%{_lib} \
+	-G Ninja
 
 %build
-cmake \
-	-D__LIB=%{_lib} \
-	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
-	-DCMAKE_BUILD_TYPE=release .
-%make
+%ninja_build -C build
 
 %install
-rm -Rf %{buildroot}
-
-make DESTDIR=%{buildroot} install
-
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-%clean
-rm -rf %{buildroot}
+%ninja_install -C build
 
 %files
 %defattr(0644,root,root,0755)
 %doc README.ctracer
 %defattr(0755,root,root,0755)
+%{_bindir}/btfdiff
 %{_bindir}/codiff
 %{_bindir}/ctracer
 %{_bindir}/dtagnames
+%{_bindir}/fullcircle
 %{_bindir}/ostra-cg
 %{_bindir}/pahole
 %{_bindir}/pdwtags
 %{_bindir}/pfunct
 %{_bindir}/pglobal
 %{_bindir}/prefcnt
+%{_bindir}/scncopy
 %{_bindir}/syscse
 %dir %{_datadir}/dwarves
 %dir %{_datadir}/dwarves/runtime
@@ -105,15 +92,7 @@ rm -rf %{buildroot}
 %files -n %{libname}-devel
 %defattr(0644,root,root,0755)
 %doc MANIFEST README
-%dir %{_includedir}/dwarves
-%{_includedir}/dwarves/dutil.h
-%{_includedir}/dwarves/dwarves.h
-%{_includedir}/dwarves/dwarves_emit.h
-%{_includedir}/dwarves/dwarves_reorganize.h
-%{_includedir}/dwarves/gobuffer.h
-%{_includedir}/dwarves/list.h
-%{_includedir}/dwarves/rbtree.h
-%{_includedir}/dwarves/strings.h
+%{_includedir}/dwarves
 %{_libdir}/lib%{name}.so
 %{_libdir}/lib%{name}_emit.so
 %{_libdir}/lib%{name}_reorganize.so
